@@ -1,3 +1,8 @@
+一个地图小程序的后端项目,使用了一个DDD分层架构来提供服务,拆箱即用,留作备查<br>
+主要组件:Spring boot + mybatis plus + mysql <br>
+mysql使用了地图索引 全文索引 JSON类型等<br>
+
+
 ### 领域模型
 
 ![img.png](img.png)
