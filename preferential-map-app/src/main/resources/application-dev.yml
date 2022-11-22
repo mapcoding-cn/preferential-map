@@ -1,0 +1,35 @@
+#开启tomcat日志输出
+server:
+  tomcat:
+    accesslog:
+      enabled: true
+    basedir: C:\Users\bycwh\log\preferential
+#Spring数据源配置
+spring:
+  devtools:
+    livereload:
+      port: 35730
+  datasource:
+    dynamic: # 动态数据源
+      primary: preferential #设置默认的数据源
+      strict: false #严格匹配数据源
+      hikari: #连接池配置
+        is-auto-commit: true
+        connection-test-query: SELECT 1
+        connection-timeout: 10000
+        idle-timeout: 30000
+        max-lifetime: 1800000
+        max-pool-size: 50
+        min-idle: 5
+      datasource:
+        preferential: #自定义数据源名称
+          url: jdbc:log4jdbc:mysql://127.0.0.1:3306/pmap
+          username: root
+          password: 12345
+          driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+          pool-name: HikariCP-preferential
+wechat:
+  login:
+    url: https://api.weixin.qq.com/sns/jscode2session?
+    appid: wx11b8aed1779debde
+    secret: 2d2d00600d9dfba3ecc2b2609d0fc0e0

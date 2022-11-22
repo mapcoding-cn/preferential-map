@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.preferential.map.dal.mapper.MerchantInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.preferential.map.dal.domain.MerchantInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="merchantId" column="merchant_id" jdbcType="BIGINT"/>
+            <result property="merchantArea" column="merchant_area" jdbcType="TINYINT"/>
+            <result property="credentialType" column="credential_type" jdbcType="OTHER"/>
+            <result property="config" column="config" jdbcType="OTHER"/>
+            <result property="source" column="source" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,merchant_id,merchant_area,
+        credential_type,config,source,
+        create_time,update_time
+    </sql>
+    <select id="queryByMerchantId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from merchant_info
+        where
+        merchant_id = #{merchantId,jdbcType=NUMERIC}
+    </select>
+</mapper>

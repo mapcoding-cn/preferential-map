@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.preferential.map.dal.mapper.MerchantMapper">
+
+    <resultMap id="BaseResultMap" type="com.preferential.map.dal.domain.Merchant">
+        <id property="merchantId" column="merchant_id" jdbcType="BIGINT"/>
+        <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
+        <result property="merchantAddress" column="merchant_address" jdbcType="VARCHAR"/>
+        <result property="merchantType" column="merchant_type" jdbcType="TINYINT"/>
+        <result property="profile" column="profile" jdbcType="VARCHAR"/>
+        <result property="images" column="images" jdbcType="OTHER"/>
+        <result property="merchantLocation" column="merchant_location" jdbcType="OTHER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        merchant_id
+        ,merchant_name,merchant_address,
+        merchant_type,profile,images,
+        merchant_location,create_time,update_time
+    </sql>
+    <select id="queryByMerchantLocationAndMerchantType" resultMap="BaseResultMap">
+        select A.* from (
+        select
+        <include refid="Base_Column_List"/>
+        from merchant where
+        MBRIntersects(ST_GeomFromText(#{box},4326),merchant_location)
+        <if test="merchantType != 0">
+            AND merchant_type = #{merchantType,jdbcType=NUMERIC}
+        </if>
+        order by merchant_id ASC limit 500
+        ) A JOIN merchant_info B ON
+        <if test="credentialType != null or area != null and area.size() > 0">
+            A.merchant_id = B.merchant_id
+            <if test="area != null and area.size() > 0">
+                AND B.merchant_area in
+                <foreach item="item" collection="area" separator="," open="(" close=")">
+                    #{item, jdbcType=NUMERIC}
+                </foreach>
+            </if>
+            <if test="credentialType != null">
+                AND json_contains(B.credential_type,json_array(#{credentialType}))
+            </if>
+        </if>
+    </select>
+
+
+    <select id="queryByMerchantName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from merchant
+        where
+        match(merchant_name) against (#{merchantName})
+        limit 10
+    </select>
+</mapper>

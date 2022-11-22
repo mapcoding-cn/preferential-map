@@ -1,0 +1,29 @@
+#Spring数据源配置
+spring:
+  devtools:
+    livereload:
+      port: 35730
+  datasource:
+    dynamic: # 动态数据源
+      primary: preferential #设置默认的数据源
+      strict: false #严格匹配数据源
+      hikari: #连接池配置
+        is-auto-commit: true
+        connection-test-query: SELECT 1
+        connection-timeout: 10000
+        idle-timeout: 30000
+        max-lifetime: 1800000
+        max-pool-size: 500
+        min-idle: 5
+      datasource:
+        preferential: #自定义数据源名称
+          url: jdbc:log4jdbc:mysql://127.0.0.1:3306/pmap?serverTimezone=Asia/Shanghai
+          username: root
+          password: 123456
+          driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+          pool-name: HikariCP-preferential
+wechat:
+  login:
+    url: https://api.weixin.qq.com/sns/jscode2session
+    appid: xxxxxxx
+    secret: xxxxxxxxxxxxxxxxxxxxxx

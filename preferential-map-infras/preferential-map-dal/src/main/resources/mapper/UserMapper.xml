@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.preferential.map.dal.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.preferential.map.dal.domain.User">
+            <id property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+            <result property="wechatName" column="wechat_name" jdbcType="VARCHAR"/>
+            <result property="superUser" column="super_user" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_id,open_id,wechat_name,
+        super_user,create_time,update_time
+    </sql>
+    <select id="queryByOpenId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where
+        open_id = #{openId,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <Property name="LOG_DATEFORMAT_PATTERN">yyyy-MM-dd HH:mm:ss.SSS</Property>
+        <Property name="CONSOLE_LOG_PATTERN">%clr{%d{${sys:LOG_DATEFORMAT_PATTERN}}}{faint}%clr{${sys:LOG_LEVEL_PATTERN}} %clr{[%X{traceId}]}{magenta} %clr{---}{faint}%clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %replace{%m}{\r?\n}{}%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+        <Property name="FILE_LOG_PATTERN">%d{${sys:LOG_DATEFORMAT_PATTERN}} ${sys:LOG_LEVEL_PATTERN}[%X{traceId}] --- [%t]%-40.40c{1.} : %replace{%m}{\r?\n}{ }%n${sys:LOG_EXCEPTION_CONVERSION_WORD} </Property>
+        <Property name="APP_NAME">preferential</Property>
+        <Property name="LOG_HOME">${env:log_file}</Property>
+        <Property name="CHARSET">utf-8</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}" charset="${CHARSET}"/>
+        </Console>
+        <!--全部文件日志(按小时分割)-->
+        <RollingFile name="File" fileName="${LOG_HOME}/${APP_NAME}.log"
+                filePattern="${LOG_HOME}/${APP_NAME}-%d{yyyy-MM-dd-HH}.log">
+            <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" charset="${CHARSET}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${LOG_HOME}" maxDepth="1">
+                    <IfFileName glob="${APP_NAME}-*.log"/>
+                    <IfLastModified age="7d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <!--error文件日志(按天分割)-->
+        <RollingFile name="FileError" fileName="${LOG_HOME}/${APP_NAME}.error.log"
+                filePattern="${LOG_HOME}/${APP_NAME}-%d{yyyy-MM-dd}.error.log">
+            <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" charset="${CHARSET}"/>
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${LOG_HOME}" maxDepth="1">
+                    <IfFileName glob="${APP_NAME}-*.error.log"/>
+                    <IfLastModified age="30d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.apache.catalina.startup.DigesterFactory" level="error"/>
+        <Logger name="org.apache.catalina.util.LifecycleBase" level="error"/>
+        <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn"/>
+        <Logger name="org.apache.sshd.common.util.SecurityUtils" level="warn"/>
+        <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn"/>
+        <Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error"/>
+        <Logger name="org.hibernate.validator.internal.util.Version" level="warn"/>
+        <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
+        <logger name="jdbc.sqlonly" level="off"/>
+        <logger name="jdbc.sqltiming" level="info"/>
+        <logger name="jdbc.audit" level="off"/>
+        <logger name="jdbc.resultset" level="error"/>
+        <logger name="jdbc.resultsettable" level="error"/>
+        <logger name="jdbc.connection" level="error"/>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="FileError"/>
+        </Root>
+    </Loggers>
+</Configuration>

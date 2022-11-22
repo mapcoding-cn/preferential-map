@@ -1,0 +1,47 @@
+#Spring管理功能
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port: 1010
+    base-path: /
+    ssl:
+      enabled: false
+    endpoint:
+      health:
+        show-details: always
+
+#开启tomcat日志输出
+server:
+  tomcat:
+    accesslog:
+      enabled: true
+      max-days: 30
+    basedir: /tmp/log/tomcat
+  servlet:
+    encoding:
+      enabled: true
+      force: true
+      charset: utf-8
+
+#Spring应用配置
+spring:
+  application:
+    name: preferential
+  main:
+    allow-bean-definition-overriding: true
+  cache:
+    caffeine:
+      spec: maximumSize=1000,expireAfterAccess=600s
+    type: caffeine
+
+#mybatisplus配置
+mybatis-plus:
+  mapper-locations:
+    - classpath*:mapper/*.xml
+  configuration:
+    cache-enabled: true
+  type-handlers-package:
+    com.preferential.map.dal.handler
